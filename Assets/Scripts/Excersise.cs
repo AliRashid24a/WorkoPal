@@ -2,9 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Excerises : MonoBehaviour
+public class Exercise
 {
-    public string exceriseName;
-    public List<int> reps;
+    public string exerciseName;
+    public int reps;
 
+    #Constructor 
+    public Exercise(string name, int reps)
+    {
+        this.exerciseName = name;
+        this.reps = reps;
+    }
 }
