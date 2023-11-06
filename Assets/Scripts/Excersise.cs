@@ -7,7 +7,6 @@ public class Exercise
     public string exerciseName;
     public int reps;
 
-    #Constructor 
     public Exercise(string name, int reps)
     {
         this.exerciseName = name;
