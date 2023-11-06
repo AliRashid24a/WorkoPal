@@ -3,43 +3,79 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using Newtonsoft.Json;
+using Unity.VisualScripting;
+using UnityEngine.UI;
+using TMPro;
 
 public class WorkoutManager : MonoBehaviour
 {
-    private List<Exercise> exercises = new List<Exercise>();
-    private string jsonFilePath;
+    private SaveData saveData;
+    //private Workout currentWorkout;
+    public List<Exercise> allExercises;
+    public List<Transform> buttonParent;
+    public GameObject buttonPrefab;
+    private TextMeshProUGUI text;
+    private int count = 0;
 
-    private void Start()
+    //Saves User data in playerprefs and loads user data from playerprefs
+    private void Awake()
     {
-        // Set the JSON file path
-        jsonFilePath = Path.Combine(Application.dataPath, "exercises.json");
-
-        // Load existing exercises from the JSON file (if it exists)
-        if (File.Exists(jsonFilePath))
+        if (PlayerPrefs.HasKey("save"))
         {
-            string json = File.ReadAllText(jsonFilePath);
-            exercises = JsonConvert.DeserializeObject<List<Exercise>>(json);
+            string saveDataAsString = PlayerPrefs.GetString("save");
+            saveData = JsonUtility.FromJson<SaveData>(saveDataAsString);
+        }
+        else
+        {
+            saveData = new SaveData();
         }
     }
 
-    public void AddExercise(string name, int reps)
+    public void AddExcerise(Exercise ex)
     {
-        Exercise newExercise = new Exercise(name, reps);
-        exercises.Add(newExercise);
-
-        // Save exercises to the JSON file
-        SaveExercisesToJson();
+        saveData.allExcercises.Add(ex);
+        CreateExerciseButton();
     }
 
-    public List<Exercise> GetExercises()
+    void UpdateExercises()
     {
-        return exercises;
+        string msg = "";
+        foreach (Exercise ex in saveData.allExcercises)
+        {
+            msg += ex.exerciseName;
+        }
+        Debug.Log(msg);
+        CreateExerciseButton();
     }
 
-    private void SaveExercisesToJson()
+    void CreateExerciseButton()
     {
-        string json = JsonConvert.SerializeObject(exercises, Formatting.Indented);
-        File.WriteAllText(jsonFilePath, json);
+        int rowID = Mathf.FloorToInt(count / 4f);
+
+        GameObject exerciseButton = Instantiate(buttonPrefab, buttonParent[rowID]); 
+
+        text = exerciseButton.GetComponentInChildren<TextMeshProUGUI>();
+        text.text = saveData.allExcercises[count].exerciseName;
+
+        count++;
+    }
+
+    void RemoveExercise()
+    {
+        //int rowID = Mathf.FloorToInt(count / 4f);
+        //GameObject exerciseButton = GameObject.Destroy(exerciseButton);
+    }
+
+    public void endSession()
+    {
+        if (PlayerPrefs.HasKey("save"))
+        {
+            string saveDataAsString = PlayerPrefs.GetString("save");
+            saveData = JsonUtility.FromJson<SaveData>(saveDataAsString);
+        }
+        else
+        {
+            saveData = new SaveData();
+        }
     }
 }
-
