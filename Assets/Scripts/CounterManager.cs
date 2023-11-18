@@ -13,6 +13,8 @@ public class CounterManager : MonoBehaviour
     [SerializeField]
     private TextMeshProUGUI text2;
     public float sum = 0;
+    public GameObject trackerPrefab;
+    public Transform trackerParent;
 
     void Awake()
     {
@@ -28,11 +30,28 @@ public class CounterManager : MonoBehaviour
     {
         text2.text = exName;
     }
+    public string GetExerciseName()
+    {
+        return text2.text;
+    }
+    public string GetExceriseSum()
+    {
+        return sum.ToString();
+    }
 
     public void ResetCounter()
     {
         sum = 0;
         text.text = "0";
+    }
+    public void CreateTrackerButton()
+    {
+        GameObject trackerButton = Instantiate(trackerPrefab, trackerParent);
+        TextMeshProUGUI trackName = trackerButton.GetComponentInChildren<TextMeshProUGUI>();
+        TextMeshProUGUI trackSum = trackerButton.GetComponentsInChildren<TextMeshProUGUI>()[1];
+        trackName.text = GetExerciseName();
+        trackSum.text = GetExceriseSum();
+
     }
 
 }
